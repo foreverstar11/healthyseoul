@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Healthy_Seoul">
+
+	<select id="selectBogun" resultType="Facilities">
+		select 
+		p.serial,name,homepage,region,longitude,latitude,phone,type,good,bookmark 
+		from public_facility p, pf_good good where p.serial = good.pf_serial 
+		and 
+		type = 1 order by serial
+	</select>
+
+	<select id="selectBogun_Board" parameterType="int" resultType="Board">
+		select pf_serial as serial , title, contents, write_date, 
+		attached_File 
+		from hc_board where pf_serial=#{value}
+	</select>
+
+	<select id="selectSportCenter_Category" parameterType="String"
+		resultType="Facilities">
+		select distinct 
+		pf.serial,pf.name,homepage,region,longitude,latitude,phone,type,good,bookmark 
+		from public_facility pf , sports_program sp , pf_good good 
+		where pf.serial = sp.pf_serial and pf.serial = good.pf_serial and 
+		type = 2 and sp.class_name=#{value}
+	</select>
+
+	<select id="selectSportCenter_All" resultType="Facilities">
+		select 
+		p.serial,name,homepage,region,longitude,latitude,phone,type,good,bookmark 
+		from public_facility p, pf_good good where p.serial = good.pf_serial 
+		and 
+		type = 2 order by serial
+	</select>
+
+	<select id="selectSportCenter_Program" parameterType="int"
+		resultType="Sports_Program">
+		select name as 
+		program_Name,target,week,class_time,fee,term,class_name 
+		from 
+		sports_program where pf_serial = #{value} order by program_serial 
+		desc
+	</select>
+
+	<select id="selectPoint" parameterType="String" resultType="Point">
+		select couse_serial as serial,longitude, latitude, point_name, 
+		point_contents,good,bookmark 
+		from dodream_roadpoint p ,dodream_road r , point_good good 
+		where p.couse_serial = r.course_serial and 
+		p.point_serial = good.point_serial and r.course_type= #{value}
+	</select>
+
+	<select id="selectRoad" parameterType="int" resultType="Road">
+		select 
+		course_type,course_name,distance,necessary_period,course_detail,transportation 
+		from dodream_road where course_serial = #{value}
+	</select>
+
+	<update id="updatepf_good" parameterType="int">
+		update pf_good set good 
+		= good + #{good} where pf_serial = #{serial}
+	</update>
+
+	<update id="updatepf_bookmark" parameterType="int">
+		update pf_good set 
+		bookmark = bookmark + #{good} where pf_serial = #{serial}
+	</update>
+
+	<update id="updatepoint_good" parameterType="int">
+		update point_good 
+		set good = good + #{good} where point_serial = #{serial}
+	</update>
+	
+	<update id="updatepoint_bookmark" parameterType="Good">
+		update 
+		point_good set bookmark = bookmark + #{good} where point_serial = #{serial}
+	</update>
+
+	<select id="selectRestaurant" parameterType="String" resultType="Restaurant">
+		select distinct p.serial,name,region,longitude,latitude,phone,food_type,
+		restaurant_type,food_menu,good,bookmark 
+		from restaurant_detail r,public_facility p ,pf_good good 
+		where r.pf_serial = p.serial and good.pf_serial = p.serial and 
+		restaurant_type=#{value}
+	</select>
+	
+	<select id="selectBogunTop" resultType="Facilities">
+		select p.serial,name,homepage,region,longitude,latitude,phone,type,good,bookmark 
+		from public_facility p, pf_good good where p.serial = good.pf_serial and 
+		type = 1 order by good + bookmark desc LIMIT 3
+	</select>
+	
+	<select id="selectSportCenterTop" resultType="Facilities">
+		select 
+		p.serial,name,homepage,region,longitude,latitude,phone,type,good,bookmark 
+		from public_facility p, pf_good good where p.serial = good.pf_serial 
+		and 
+		type = 2 order by good + bookmark desc LIMIT 3
+	</select>
+	
+	<select id="selectPointTop" parameterType="String" resultType="Point">
+		select couse_serial as serial,longitude, latitude, point_name, 
+		point_contents,good,bookmark 
+		from dodream_roadpoint p ,dodream_road r , point_good good 
+		where p.couse_serial = r.course_serial and 
+		p.point_serial = good.point_serial order by good + bookmark desc LIMIT 3
+	</select>
+	
+	<select id="selectRestaurantTop" parameterType="String" resultType="Restaurant">
+		select distinct p.serial,name,region,longitude,latitude,phone,food_type,
+		restaurant_type,food_menu,good,bookmark 
+		from restaurant_detail r,public_facility p ,pf_good good 
+		where r.pf_serial = p.serial and good.pf_serial = p.serial 
+		order by good + bookmark desc LIMIT 3
+	</select>
+	
+	<select id="selectBogunDistance" resultType="Facilities" parameterType="Latlng">
+		select p.serial,name,homepage,region,longitude,latitude,phone,type,good,bookmark 
+		from public_facility p, pf_good good where p.serial = good.pf_serial and 
+		type = 1 order by 
+		abs(longitude-#{lng})+abs(latitude-#{lat}) LIMIT 3
+	</select>
+	
+	<select id="selectSportCenterDistance" resultType="Facilities" parameterType="Latlng">
+		select 
+		p.serial,name,homepage,region,longitude,latitude,phone,type,good,bookmark 
+		from public_facility p, pf_good good where p.serial = good.pf_serial and 
+		type = 2 order by 
+		abs(longitude-#{lng})+abs(latitude-#{lat}) LIMIT 3
+	</select>
+	
+	<select id="selectPointDistance" resultType="Point" parameterType="Latlng">
+		select couse_serial as serial,longitude, latitude, point_name, 
+		point_contents,good,bookmark 
+		from dodream_roadpoint p ,dodream_road r , point_good good 
+		where p.couse_serial = r.course_serial and 
+		p.point_serial = good.point_serial 
+		order by abs(longitude-#{lng})+ abs(latitude-#{lat}) LIMIT 3
+	</select>
+	
+	<select id="selectRestaurantDistance" parameterType="Latlng" resultType="Restaurant">
+			select distinct p.serial,name,region,longitude,latitude,phone,food_type,
+			restaurant_type,food_menu,good,bookmark 
+			from restaurant_detail r,public_facility p ,pf_good good 
+			where r.pf_serial = p.serial and good.pf_serial = p.serial 
+			order by abs(longitude-#{lng})+abs(latitude-#{lat}) LIMIT 3;
+	</select>
+</mapper>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

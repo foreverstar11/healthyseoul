@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	
+	<typeAliases>
+		<typeAlias  alias="Facilities"  type="test3.Facilities" />
+		<typeAlias  alias="Board"  type="test3.BoardVO" />
+		<typeAlias  alias="Sports_Program"  type="test3.Sports_ProgramVO" />
+		<typeAlias  alias="Point"  type="test3.PointVO" />
+		<typeAlias  alias="Road"  type="test3.RoadVO" />
+		<typeAlias  alias="Restaurant"  type="test3.Restaurant" />
+		<typeAlias  alias="Good"  type="test3.Good" />
+		<typeAlias  alias="Latlng"  type="test3.Latlng" />
+	</typeAliases>
+
+</configuration>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
